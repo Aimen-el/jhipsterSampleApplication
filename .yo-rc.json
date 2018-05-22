@@ -31,6 +31,16 @@
     "jhipsterVersion": "4.14.4",
     "packageFolder": "io/github/jhipster/application",
     "jwtSecretKey": "257be72df0c1cdbda873841684146ff5bec668a1",
-    "jhiPrefix": "jhi"
+    "jhiPrefix": "jhi",
+    "appsFolders": [
+      "jhipsterSampleApplication"
+    ],
+    "directoryPath": "../",
+    "monitoring": "no",
+    "dockerRepositoryName": "172.30.97.4:5000",
+    "dockerPushCommand": "docker push",
+    "openshiftNamespace": "leanerp",
+    "storageType": "ephemeral",
+    "registryReplicas": 2
   }
 }
