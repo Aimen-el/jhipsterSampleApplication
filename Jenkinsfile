@@ -1,50 +1,105 @@
 #!/usr/bin/env groovy
 
-node {
+pipeline {
+  agent {
+    node {
+      label 'jenkins-lts-1-rtklg'
+    }
+
+  }
+  stages {
     stage('checkout') {
-        checkout scm
-    }
+      agent {
+        node {
+          label 'jenkins-lts-1-rtklg'
+        }
 
+      }
+      steps {
+        sh 'checkout scm'
+      }
+    }
     stage('check java') {
-        sh "java -version"
-    }
+      agent {
+        node {
+          label 'jenkins-lts-1-rtklg'
+        }
 
+      }
+      steps {
+        sh '''sh "java -version"
+'''
+      }
+    }
     stage('clean') {
-        sh "chmod +x mvnw"
-        sh "./mvnw clean"
-    }
+      agent {
+        node {
+          label 'jenkins-lts-1-rtklg'
+        }
 
+      }
+      steps {
+        sh '''sh "chmod +x mvnw"
+sh "./mvnw clean"'''
+      }
+    }
     stage('install tools') {
-        sh "./mvnw com.github.eirslett:frontend-maven-plugin:install-node-and-yarn -DnodeVersion=v8.9.4 -DyarnVersion=v1.3.2"
-    }
+      agent {
+        node {
+          label 'jenkins-lts-1-rtklg'
+        }
 
+      }
+      steps {
+        sh '''sh "./mvnw com.github.eirslett:frontend-maven-plugin:install-node-and-yarn -DnodeVersion=v8.9.4 -DyarnVersion=v1.3.2"
+'''
+      }
+    }
     stage('yarn install') {
-        sh "./mvnw com.github.eirslett:frontend-maven-plugin:yarn"
-    }
-
-    stage('backend tests') {
-        try {
-            sh "./mvnw test"
-        } catch(err) {
-            throw err
-        } finally {
-            junit '**/target/surefire-reports/TEST-*.xml'
+      agent {
+        node {
+          label 'jenkins-lts-1-rtklg'
         }
-    }
 
+      }
+      steps {
+        catchError() {
+          sh '''sh "./mvnw test"
+'''
+          sh '''junit \'**/target/surefire-reports/TEST-*.xml\'
+'''
+        }
+
+      }
+    }
     stage('frontend tests') {
-        try {
-            sh "./mvnw com.github.eirslett:frontend-maven-plugin:yarn -Dfrontend.yarn.arguments=test"
-        } catch(err) {
-            throw err
-        } finally {
-            junit '**/target/test-results/karma/TESTS-*.xml'
+      agent {
+        node {
+          label 'jenkins-lts-1-rtklg'
         }
-    }
 
+      }
+      steps {
+        catchError() {
+          sh '''sh "./mvnw com.github.eirslett:frontend-maven-plugin:yarn -Dfrontend.yarn.arguments=test"
+'''
+          sh '''junit \'**/target/test-results/karma/TESTS-*.xml\'
+'''
+        }
+
+      }
+    }
     stage('packaging') {
-        sh "./mvnw verify -Pprod -DskipTests"
-        archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
-    }
+      agent {
+        node {
+          label 'jenkins-lts-1-rtklg'
+        }
 
+      }
+      steps {
+        sh '''sh "./mvnw verify -Pprod -DskipTests"
+archiveArtifacts artifacts: \'**/target/*.war\', fingerprint: true'''
+      }
+    }
+  }
 }
