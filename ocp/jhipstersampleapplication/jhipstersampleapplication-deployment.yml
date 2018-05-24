@@ -87,7 +87,7 @@ objects:
         spec:
           containers:
           - name: ${APPLICATION_NAME}
-            image: 172.30.97.4:5000/jhipstersampleapplication
+            image: 172.30.97.4:5000/leanerp/jhipstersampleapplication
             imagePullPolicy: IfNotPresent
             env:
             - name: SPRING_PROFILES_ACTIVE
